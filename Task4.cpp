@@ -23,12 +23,12 @@ private:
 	void FirstPiece();
 	void RunGame();
 
-	CTable table;
-	CDominoes dominoes;
-	CPlayer playerOne, playerTwo;
+	CTable *table;
+	CDominoes *dominoes;
+	CPlayer *players;
 
-	const int STARTING_HAND_SIZE = 10;
-
+	const int STARTING_HAND_SIZE = 7;
+	const int NUMBER_OF_PLAYERS = 2;
 };
 
 // Stores information about a domino
@@ -55,6 +55,7 @@ class CTable
 public:
 	CTable();
 	~CTable();
+	deque<dataDomino*> placedDominoes;
 };
 
 // Contains the data structure with pieces
@@ -64,8 +65,9 @@ public:
 	CDominoes();
 	~CDominoes();
 	void InitializeDominoes(void);
-	deque<dataDomino*> allDominoes, dominoesPile, placedDominoes;
-	dataDomino* GetPiece();
+	void PrintDomino(dataDomino*);
+	deque<dataDomino*> allDominoes;
+	dataDomino* GetRandomPiece();
 };
 
 // Select a randomly picked domino and sequentially show the selected pieces
@@ -78,22 +80,24 @@ public:
 
 private:
 	void TakeDomino(dataDomino*);
-	void PlaceDomino();
+	void PlaceDomino(CTable*, dataDomino*, int);
 	// Current hand variable?
 };
 
 Task4::Task4()
 {
-	CTable table();
-	CDominoes dominoes();
-	CPlayer playerOne();
-	CPlayer playerTwo();
+	CPlayer *players = new CPlayer[NUMBER_OF_PLAYERS];
+	CTable *table = new CTable;
+	CDominoes *dominoes = new CDominoes;
 	API();
 };
 
 Task4::~Task4()
 {
 	cout << "Deleting Task4 Object.";
+	delete [] players;
+	delete table;
+	delete dominoes;
 };
 
 void Task4::API()
@@ -107,7 +111,7 @@ void Task4::API()
 
 void Task4::CreateDominoes()
 {
-	dominoes.InitializeDominoes();
+	dominoes->InitializeDominoes();
 };
 
 void Task4::DrawDominoes()
@@ -120,7 +124,7 @@ void Task4::DrawDominoes()
 
 void Task4::WhoFirst()
 {
-	// TODO randomly decide who's first
+	int firstPlayer = CRandom::GetRandomPublic(0, NUMBER_OF_PLAYERS);
 };
 
 void Task4::FirstPiece()
@@ -141,7 +145,6 @@ void Task4::RunGame()
 
 CTable::CTable()
 {
-
 };
 
 CTable::~CTable()
@@ -151,7 +154,6 @@ CTable::~CTable()
 
 CDominoes::CDominoes()
 {
-
 };
 
 CDominoes::~CDominoes()
@@ -160,41 +162,42 @@ CDominoes::~CDominoes()
 };
 
 void CDominoes::InitializeDominoes(void) {
-	dataDomino piece;
-	int rangeLow = 0, rangeHigh = 1;
-	for (int right = 0; right<7; right++)
+	for (int right = 0; right < 7; right++)
 	{
-		for (int left = right; left<7; left++)
+		for (int left = 0; left < 7; left++)
 		{
+			dataDomino piece;
 			piece.right = right;
 			piece.left = left;
-			piece.available = 1; // randOBJ.getRandomPublic(rangeLow, rangeHigh);
+			piece.available = 1;
 
-			cout << "[" << piece.left << "|" << piece.right << "] Status(" << piece.available << ")  ";
+			PrintDomino(&piece);
 			allDominoes.push_back(&piece);
 		}
-
 		cout << endl;
 	}
 	cout << "allDominoes stores " << (int)allDominoes.size() << " pieces.\n";
-	cout << "dominoesPile stores " << (int)dominoesPile.size() << " pieces.\n";
 };
 
-dataDomino* CDominoes::GetPiece() {
+void CDominoes::PrintDomino(dataDomino *piece)
+{
+	cout << "[" << piece->left << "|" << piece->right << "] Status(" << piece->available << ")  ";
+};
+
+dataDomino* CDominoes::GetRandomPiece() {
 	dataDomino* piece;
 	do // This is gonna get messy...
 		dataDomino* piece = allDominoes.at(CRandom::GetRandomPublic(0, allDominoes.size()));
 	while (piece->available != 1);
 
-	cout << "[" << piece->left << "|" << piece->right << "]"
-		 << " available = " << piece->available << endl;
+	cout << "Reandom piece drawn: ";
+	PrintDomino(piece);
 
 	return(piece);
 };
 
 CPlayer::CPlayer()
 {
-
 };
 
 CPlayer::~CPlayer()
@@ -206,12 +209,19 @@ void CPlayer::TakeDomino(dataDomino* newDomino)
 {
 	newDomino->available = 0;
 	playerDominoes.push_back(newDomino);
-
 };
 
-void CPlayer::PlaceDomino()
+void CPlayer::PlaceDomino(CTable* table, dataDomino* domino, int pos)
 {
-
+	switch (pos)
+	{
+	case 0:
+		table->placedDominoes.push_front(domino);
+		break;
+	case 1:
+		table->placedDominoes.push_back(domino);
+		break;
+	}
 };
 
 int main(void)
