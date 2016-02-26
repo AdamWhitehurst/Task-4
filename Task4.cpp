@@ -186,16 +186,7 @@ void CDominoes::InitializeDominoes(void) {
 		}
 		std::cout << endl;
 	}
-	std::cout << "allDominoes stores " << (int)allDominoes.size() << " pieces.\n";
-	for (int i = 0; i < allDominoes.size(); i++) {
-		PrintDomino(allDominoes[i]);
-	}
-
 	std::random_shuffle(availableDominoes.begin(), availableDominoes.end());
-	
-	for (int i = 0; i < allDominoes.size(); i++) {
-		PrintDomino(allDominoes[i]);
-	}
 }
 
 void CDominoes::PrintDomino(dataDomino *piece)
