@@ -184,14 +184,13 @@ void CDominoes::InitializeDominoes(void) {
 			allDominoes.push_back(piece);
 			availableDominoes.push_back(piece);
 		}
-		std::cout << endl;
 	}
 	std::random_shuffle(availableDominoes.begin(), availableDominoes.end());
 }
 
 void CDominoes::PrintDomino(dataDomino *piece)
 {
-	std::cout << "[" << piece->left << "|" << piece->right << "] Status(" << piece->available << ")  ";
+	std::cout << "[" << piece->left << "|" << piece->right << "] \nStatus:  " << piece->available << endl;
 };
 
 dataDomino* CDominoes::GetRandomPiece() {
