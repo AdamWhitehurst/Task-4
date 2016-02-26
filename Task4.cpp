@@ -59,11 +59,9 @@ class CPlayer
 public:
 	CPlayer();
 	~CPlayer();
-	deque<dataDomino*> playerDominoes;
-
-private:
 	void TakeDomino(dataDomino*);
 	void PlaceDomino(CTable*, dataDomino*, int);
+	deque<dataDomino*> playerDominoes;
 };
 
 // Main class that handles domino game
@@ -122,7 +120,11 @@ void Task4::DrawDominoes()
 {
 	for (int i = 0; i < STARTING_HAND_SIZE; i++)
 	{
-
+		for (int j = 0; j < NUMBER_OF_PLAYERS; i++)
+		{
+			dataDomino* piece = dominoes->GetRandomPiece();
+			players[j].TakeDomino(piece);
+		}
 	}
 };
 
@@ -195,11 +197,13 @@ void CDominoes::PrintDomino(dataDomino *piece)
 
 dataDomino* CDominoes::GetRandomPiece() {
 	dataDomino* piece;
+
 	//do // This is gonna get messy...
 	//{
 	//	piece = allDominoes.at(CRandom::GetRandomPublic(0, allDominoes.size()));
 	//}
 	//while (piece->available != 1);
+
 	piece = availableDominoes.back();
 	availableDominoes.pop_back();
 	piece->available = 0;
@@ -221,7 +225,6 @@ CPlayer::~CPlayer()
 
 void CPlayer::TakeDomino(dataDomino* newDomino)
 {
-	newDomino->available = 0;
 	playerDominoes.push_back(newDomino);
 };
 
