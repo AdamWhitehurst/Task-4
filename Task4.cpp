@@ -1,6 +1,5 @@
 #include <time.h>
 #include <iostream>
-#include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -56,6 +55,8 @@ public:
 	CTable();
 	~CTable();
 	deque<dataDomino*> placedDominoes;
+private:
+	void placeFirstPiece(void);
 };
 
 // Contains the data structure with pieces
@@ -65,6 +66,7 @@ public:
 	CDominoes();
 	~CDominoes();
 	void InitializeDominoes(void);
+	//void SetAvailabilityOnCreate(void);
 	void PrintDomino(dataDomino*);
 	deque<dataDomino*> allDominoes;
 	dataDomino* GetRandomPiece();
@@ -81,7 +83,6 @@ public:
 private:
 	void TakeDomino(dataDomino*);
 	void PlaceDomino(CTable*, dataDomino*, int);
-	// Current hand variable?
 };
 
 Task4::Task4()
@@ -129,7 +130,7 @@ void Task4::WhoFirst()
 
 void Task4::FirstPiece()
 {
-	// TODO draw a random piece and place it
+
 };
 
 void Task4::RunGame()
@@ -150,7 +151,12 @@ CTable::CTable()
 CTable::~CTable()
 {
 	cout << "Deleting CTable Object.";
-};
+}
+void CTable::placeFirstPiece(void)
+{
+	// TODO place the first piece to start the game
+}
+;
 
 CDominoes::CDominoes()
 {
@@ -177,7 +183,7 @@ void CDominoes::InitializeDominoes(void) {
 		cout << endl;
 	}
 	cout << "allDominoes stores " << (int)allDominoes.size() << " pieces.\n";
-};
+}
 
 void CDominoes::PrintDomino(dataDomino *piece)
 {
@@ -226,6 +232,10 @@ void CPlayer::PlaceDomino(CTable* table, dataDomino* domino, int pos)
 
 int main(void)
 {
+	time_t timer;
+	time(&timer);
+	srand(timer);
+
 	Task4 task4;
 	return 0;
 }
