@@ -46,10 +46,11 @@ public:
 	CDominoes();
 	~CDominoes();
 	void InitializeDominoes(void);
-	//void SetAvailabilityOnCreate(void);
 	void PrintDomino(dataDomino*);
-	vector<dataDomino*> allDominoes, availableDominoes;
 	dataDomino* GetRandomPiece();
+	vector<dataDomino*> allDominoes;
+private:
+	vector<dataDomino*> availableDominoes;
 };
 
 // Select a randomly picked domino and sequentially show the selected pieces
@@ -204,13 +205,16 @@ void CDominoes::PrintDomino(dataDomino *piece)
 
 dataDomino* CDominoes::GetRandomPiece() {
 	dataDomino* piece;
-	do // This is gonna get messy...
-	{
-		piece = allDominoes.at(CRandom::GetRandomPublic(0, allDominoes.size()));
-	}
-	while (piece->available != 1);
+	//do // This is gonna get messy...
+	//{
+	//	piece = allDominoes.at(CRandom::GetRandomPublic(0, allDominoes.size()));
+	//}
+	//while (piece->available != 1);
+	piece = availableDominoes.back();
+	availableDominoes.pop_back();
+	piece->available = 0;
 
-	std::cout << "Reandom piece drawn: ";
+	std::cout << "Random piece drawn: ";
 	PrintDomino(piece);
 
 	return(piece);
