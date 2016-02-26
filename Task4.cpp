@@ -5,30 +5,10 @@
 #include <stdint.h>
 #include <math.h>
 #include <deque>
+#include <vector>
+#include <algorithm>
 
 using namespace std;
-
-// Main class that handles domino game
-class Task4
-{
-public:
-	Task4();
-	~Task4();
-private:
-	void API();
-	void CreateDominoes();
-	void DrawDominoes();
-	void WhoFirst();
-	void FirstPiece();
-	void RunGame();
-
-	CTable *table;
-	CDominoes *dominoes;
-	CPlayer *players;
-
-	const int STARTING_HAND_SIZE = 7;
-	const int NUMBER_OF_PLAYERS = 2;
-};
 
 // Stores information about a domino
 struct dataDomino {
@@ -68,7 +48,7 @@ public:
 	void InitializeDominoes(void);
 	//void SetAvailabilityOnCreate(void);
 	void PrintDomino(dataDomino*);
-	deque<dataDomino*> allDominoes;
+	vector<dataDomino*> allDominoes, availableDominoes;
 	dataDomino* GetRandomPiece();
 };
 
@@ -85,17 +65,39 @@ private:
 	void PlaceDomino(CTable*, dataDomino*, int);
 };
 
+// Main class that handles domino game
+class Task4
+{
+public:
+	Task4();
+	~Task4();
+private:
+	void API();
+	void CreateDominoes();
+	void DrawDominoes();
+	void WhoFirst();
+	void FirstPiece();
+	void RunGame();
+
+	CTable *table;
+	CDominoes *dominoes;
+	CPlayer *players;
+
+	const int STARTING_HAND_SIZE = 7;
+	const int NUMBER_OF_PLAYERS = 2;
+};
+
 Task4::Task4()
 {
-	CPlayer *players = new CPlayer[NUMBER_OF_PLAYERS];
-	CTable *table = new CTable;
-	CDominoes *dominoes = new CDominoes;
+	this->players = new CPlayer[NUMBER_OF_PLAYERS];
+	this->table = new CTable;
+	this->dominoes = new CDominoes;
 	API();
 };
 
 Task4::~Task4()
 {
-	cout << "Deleting Task4 Object.";
+	std::cout << "Deleting Task4 Object.";
 	delete [] players;
 	delete table;
 	delete dominoes;
@@ -150,7 +152,7 @@ CTable::CTable()
 
 CTable::~CTable()
 {
-	cout << "Deleting CTable Object.";
+	std::cout << "Deleting CTable Object.";
 }
 void CTable::placeFirstPiece(void)
 {
@@ -164,39 +166,51 @@ CDominoes::CDominoes()
 
 CDominoes::~CDominoes()
 {
-	cout << "Deleting CDominoes Object.";
+	std::cout << "Deleting CDominoes Object.";
 };
 
 void CDominoes::InitializeDominoes(void) {
+
 	for (int right = 0; right < 7; right++)
 	{
 		for (int left = 0; left < 7; left++)
 		{
-			dataDomino piece;
-			piece.right = right;
-			piece.left = left;
-			piece.available = 1;
+			dataDomino* piece = new dataDomino;
+			piece->right = right;
+			piece->left = left;
+			piece->available = 1;
 
-			PrintDomino(&piece);
-			allDominoes.push_back(&piece);
+			allDominoes.push_back(piece);
+			availableDominoes.push_back(piece);
 		}
-		cout << endl;
+		std::cout << endl;
 	}
-	cout << "allDominoes stores " << (int)allDominoes.size() << " pieces.\n";
+	std::cout << "allDominoes stores " << (int)allDominoes.size() << " pieces.\n";
+	for (int i = 0; i < allDominoes.size(); i++) {
+		PrintDomino(allDominoes[i]);
+	}
+
+	std::random_shuffle(availableDominoes.begin(), availableDominoes.end());
+	
+	for (int i = 0; i < allDominoes.size(); i++) {
+		PrintDomino(allDominoes[i]);
+	}
 }
 
 void CDominoes::PrintDomino(dataDomino *piece)
 {
-	cout << "[" << piece->left << "|" << piece->right << "] Status(" << piece->available << ")  ";
+	std::cout << "[" << piece->left << "|" << piece->right << "] Status(" << piece->available << ")  ";
 };
 
 dataDomino* CDominoes::GetRandomPiece() {
 	dataDomino* piece;
 	do // This is gonna get messy...
-		dataDomino* piece = allDominoes.at(CRandom::GetRandomPublic(0, allDominoes.size()));
+	{
+		piece = allDominoes.at(CRandom::GetRandomPublic(0, allDominoes.size()));
+	}
 	while (piece->available != 1);
 
-	cout << "Reandom piece drawn: ";
+	std::cout << "Reandom piece drawn: ";
 	PrintDomino(piece);
 
 	return(piece);
@@ -208,7 +222,7 @@ CPlayer::CPlayer()
 
 CPlayer::~CPlayer()
 {
-	cout << "Deleting CPlayer Object.";
+	std::cout << "Deleting CPlayer Object.";
 };
 
 void CPlayer::TakeDomino(dataDomino* newDomino)
