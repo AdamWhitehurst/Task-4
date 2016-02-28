@@ -65,7 +65,7 @@ public:
 	CPlayer();
 	~CPlayer();
 	void TakeDomino(dataDomino*);
-	void PlaceDomino(CTable*, dataDomino*, int);
+	bool PlaceDomino(CTable*, dataDomino*, bool);
 	deque<dataDomino*> playerDominoes;
 	dataDomino* ChooseDomino(int currentPlayer);
 };
@@ -261,16 +261,19 @@ void CPlayer::TakeDomino(dataDomino* newDomino)
 	playerDominoes.push_back(newDomino);
 };
 
-void CPlayer::PlaceDomino(CTable* table, dataDomino* domino, int pos)
+bool CPlayer::PlaceDomino(CTable* table, dataDomino* domino, bool head)
 {
-	switch (pos)
+	if (head)
 	{
-	case 0:
-		table->PlaceDominoOnHead(domino);
-		break;
-	case 1:
-		table->PlaceDominoOnTail(domino);
-		break;
+		if (table->PlaceDominoOnHead(domino))
+			return true;
+		else return false;
+	}
+	else
+	{
+		if (table->PlaceDominoOnTail(domino))
+			return true;
+		else return false;
 	}
 }
 dataDomino * CPlayer::ChooseDomino(int currentPlayer)
@@ -287,8 +290,7 @@ dataDomino * CPlayer::ChooseDomino(int currentPlayer)
 	cin >> chosenSpot;
 
 	return playerDominoes.at(chosenSpot);
-}
-;
+};
 
 int main(void)
 {
