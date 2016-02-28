@@ -35,6 +35,8 @@ public:
 	CTable();
 	~CTable();
 	deque<dataDomino*> placedDominoes;
+	dataDomino* head();
+	dataDomino* tail();
 };
 
 // Contains the data structure with pieces
@@ -154,6 +156,16 @@ CTable::CTable()
 CTable::~CTable()
 {
 	std::cout << "Deleting CTable Object.";
+}
+
+dataDomino * CTable::head()
+{
+	return placedDominoes.back();
+}
+
+dataDomino * CTable::tail()
+{
+	return placedDominoes.front();
 }
 
 CDominoes::CDominoes()
