@@ -46,7 +46,7 @@ public:
 	CDominoes();
 	~CDominoes();
 	void InitializeDominoes(void);
-	void PrintDomino(dataDomino*);
+	static void PrintDomino(dataDomino*);
 	dataDomino* GetRandomPiece();
 	vector<dataDomino*> allDominoes;
 private:
@@ -62,6 +62,7 @@ public:
 	void TakeDomino(dataDomino*);
 	void PlaceDomino(CTable*, dataDomino*, int);
 	deque<dataDomino*> playerDominoes;
+	dataDomino* chooseDomino(int currentPlayer);
 };
 
 // Main class that handles domino game
@@ -74,7 +75,7 @@ private:
 	void API();
 	void CreateDominoes();
 	void DrawDominoes();
-	void WhoFirst();
+	int WhoFirst();
 	void FirstPiece();
 	void RunGame();
 
@@ -128,9 +129,10 @@ void Task4::DrawDominoes()
 	}
 };
 
-void Task4::WhoFirst()
+int Task4::WhoFirst()
 {
 	int firstPlayer = CRandom::GetRandomPublic(0, NUMBER_OF_PLAYERS);
+	return firstPlayer;
 };
 
 void Task4::FirstPiece()
@@ -140,13 +142,23 @@ void Task4::FirstPiece()
 
 void Task4::RunGame()
 {
-	// TODO Create loop that plays the game:
-	// Check winner (end if there is a winner, empty hand)
-	// next player
-	// find piece match
-	// can play? if yes, flip piece over if needed; place piece in train
-	// if no, draw piece -> can draw? yes, go to find piece match
-	// if no, pass
+	bool winner;
+	int currentPlayer = WhoFirst();
+	do
+	{
+		// TODO Place the domino on the board using value returned by chooseDomino
+
+
+		// Check for winner
+		if (players[currentPlayer].playerDominoes.size() == 0)
+			winner = true;
+		// Go to next player
+		else if (currentPlayer == NUMBER_OF_PLAYERS)
+			currentPlayer = 0;
+		else
+			currentPlayer++;
+	}while (!winner);
+	cout << "The winner is Player " << currentPlayer;
 };
 
 CTable::CTable()
@@ -239,7 +251,23 @@ void CPlayer::PlaceDomino(CTable* table, dataDomino* domino, int pos)
 		table->placedDominoes.push_back(domino);
 		break;
 	}
-};
+}
+dataDomino * CPlayer::chooseDomino(int currentPlayer)
+{
+	int chosenSpot;
+	cout << "Here is Player " << currentPlayer << "'s hand:" << endl;
+	for (int i = 0; i < playerDominoes.size(); i++)
+	{
+		cout << "Domino " << i << ": ";
+		CDominoes::PrintDomino(playerDominoes.at(i));
+	}
+
+	cout << "Choose a piece: " << endl;
+	cin >> chosenSpot;
+
+	return playerDominoes.at(chosenSpot);
+}
+;
 
 int main(void)
 {
