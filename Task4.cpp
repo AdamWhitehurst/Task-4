@@ -34,9 +34,14 @@ class CTable
 public:
 	CTable();
 	~CTable();
-	deque<dataDomino*> placedDominoes;
+	bool PlaceDominoOnHead(dataDomino*);
+	bool PlaceDominoOnTail(dataDomino*);
+	dataDomino* Head();
+	dataDomino* Tail();
+	int placableHeadValue;
+	int placableTailValue;
 private:
-	void placeFirstPiece(void);
+	deque<dataDomino*> placedDominoes;
 };
 
 // Contains the data structure with pieces
@@ -60,9 +65,9 @@ public:
 	CPlayer();
 	~CPlayer();
 	void TakeDomino(dataDomino*);
-	void PlaceDomino(CTable*, dataDomino*, int);
+	bool PlaceDomino(CTable*, dataDomino*, bool);
 	deque<dataDomino*> playerDominoes;
-	dataDomino* chooseDomino(int currentPlayer);
+	dataDomino* ChooseDomino(int currentPlayer);
 };
 
 // Main class that handles domino game
@@ -109,7 +114,7 @@ void Task4::API()
 	DrawDominoes();
 	WhoFirst();
 	FirstPiece();
-
+	RunGame();
 };
 
 void Task4::CreateDominoes()
@@ -137,7 +142,7 @@ int Task4::WhoFirst()
 
 void Task4::FirstPiece()
 {
-
+	table->PlaceDominoOnHead(dominoes->GetRandomPiece());
 };
 
 void Task4::RunGame()
@@ -169,11 +174,27 @@ CTable::~CTable()
 {
 	std::cout << "Deleting CTable Object.";
 }
-void CTable::placeFirstPiece(void)
+
+bool CTable::PlaceDominoOnHead(dataDomino * newHeadDomino)
 {
-	// TODO place the first piece to start the game
+	//if (newHeadDomino->left == )
+	placedDominoes.push_back(newHeadDomino);
 }
-;
+
+bool CTable::PlaceDominoOnTail(dataDomino * newTailDomino)
+{
+
+}
+
+dataDomino * CTable::Head()
+{
+	return placedDominoes.back();
+}
+
+dataDomino * CTable::Tail()
+{
+	return placedDominoes.front();
+}
 
 CDominoes::CDominoes()
 {
@@ -240,19 +261,22 @@ void CPlayer::TakeDomino(dataDomino* newDomino)
 	playerDominoes.push_back(newDomino);
 };
 
-void CPlayer::PlaceDomino(CTable* table, dataDomino* domino, int pos)
+bool CPlayer::PlaceDomino(CTable* table, dataDomino* domino, bool head)
 {
-	switch (pos)
+	if (head)
 	{
-	case 0:
-		table->placedDominoes.push_front(domino);
-		break;
-	case 1:
-		table->placedDominoes.push_back(domino);
-		break;
+		if (table->PlaceDominoOnHead(domino))
+			return true;
+		else return false;
+	}
+	else
+	{
+		if (table->PlaceDominoOnTail(domino))
+			return true;
+		else return false;
 	}
 }
-dataDomino * CPlayer::chooseDomino(int currentPlayer)
+dataDomino * CPlayer::ChooseDomino(int currentPlayer)
 {
 	int chosenSpot;
 	cout << "Here is Player " << currentPlayer << "'s hand:" << endl;
@@ -266,8 +290,7 @@ dataDomino * CPlayer::chooseDomino(int currentPlayer)
 	cin >> chosenSpot;
 
 	return playerDominoes.at(chosenSpot);
-}
-;
+};
 
 int main(void)
 {
