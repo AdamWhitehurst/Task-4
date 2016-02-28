@@ -67,7 +67,7 @@ public:
 	void TakeDomino(dataDomino*);
 	void PlaceDomino(CTable*, dataDomino*, int);
 	deque<dataDomino*> playerDominoes;
-	dataDomino* chooseDomino(int currentPlayer);
+	dataDomino* ChooseDomino(int currentPlayer);
 };
 
 // Main class that handles domino game
@@ -266,14 +266,14 @@ void CPlayer::PlaceDomino(CTable* table, dataDomino* domino, int pos)
 	switch (pos)
 	{
 	case 0:
-		table->placedDominoes.push_front(domino);
+		table->PlaceDominoOnHead(domino);
 		break;
 	case 1:
-		table->placedDominoes.push_back(domino);
+		table->PlaceDominoOnTail(domino);
 		break;
 	}
 }
-dataDomino * CPlayer::chooseDomino(int currentPlayer)
+dataDomino * CPlayer::ChooseDomino(int currentPlayer)
 {
 	int chosenSpot;
 	cout << "Here is Player " << currentPlayer << "'s hand:" << endl;
