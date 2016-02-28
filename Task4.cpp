@@ -35,8 +35,8 @@ public:
 	CTable();
 	~CTable();
 	deque<dataDomino*> placedDominoes;
-private:
-	void placeFirstPiece(void);
+	dataDomino* head();
+	dataDomino* tail();
 };
 
 // Contains the data structure with pieces
@@ -109,7 +109,7 @@ void Task4::API()
 	DrawDominoes();
 	WhoFirst();
 	FirstPiece();
-
+	RunGame();
 };
 
 void Task4::CreateDominoes()
@@ -137,7 +137,7 @@ int Task4::WhoFirst()
 
 void Task4::FirstPiece()
 {
-
+	table->placedDominoes.push_back(dominoes->GetRandomPiece());
 };
 
 void Task4::RunGame()
@@ -169,11 +169,16 @@ CTable::~CTable()
 {
 	std::cout << "Deleting CTable Object.";
 }
-void CTable::placeFirstPiece(void)
+
+dataDomino * CTable::head()
 {
-	// TODO place the first piece to start the game
+	return placedDominoes.back();
 }
-;
+
+dataDomino * CTable::tail()
+{
+	return placedDominoes.front();
+}
 
 CDominoes::CDominoes()
 {
