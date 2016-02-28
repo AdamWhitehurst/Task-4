@@ -34,9 +34,14 @@ class CTable
 public:
 	CTable();
 	~CTable();
+	bool PlaceDominoOnHead(dataDomino*);
+	bool PlaceDominoOnTail(dataDomino*);
+	dataDomino* Head();
+	dataDomino* Tail();
+	int placableHeadValue;
+	int placableTailValue;
+private:
 	deque<dataDomino*> placedDominoes;
-	dataDomino* head();
-	dataDomino* tail();
 };
 
 // Contains the data structure with pieces
@@ -135,7 +140,7 @@ void Task4::WhoFirst()
 
 void Task4::FirstPiece()
 {
-	table->placedDominoes.push_back(dominoes->GetRandomPiece());
+	table->PlaceDominoOnHead(dominoes->GetRandomPiece());
 };
 
 void Task4::RunGame()
@@ -158,12 +163,23 @@ CTable::~CTable()
 	std::cout << "Deleting CTable Object.";
 }
 
-dataDomino * CTable::head()
+bool CTable::PlaceDominoOnHead(dataDomino * newHeadDomino)
+{
+	//if (newHeadDomino->left == )
+	placedDominoes.push_back(newHeadDomino);
+}
+
+bool CTable::PlaceDominoOnTail(dataDomino * newTailDomino)
+{
+
+}
+
+dataDomino * CTable::Head()
 {
 	return placedDominoes.back();
 }
 
-dataDomino * CTable::tail()
+dataDomino * CTable::Tail()
 {
 	return placedDominoes.front();
 }
