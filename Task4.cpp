@@ -38,8 +38,8 @@ public:
 	bool PlaceDominoOnTail(dataDomino*);
 	dataDomino* Head();
 	dataDomino* Tail();
-	int placableHeadValue;
-	int placableTailValue;
+	int placableHeadValue = -1;
+	int placableTailValue = -1;
 private:
 	deque<dataDomino*> placedDominoes;
 };
@@ -177,13 +177,48 @@ CTable::~CTable()
 
 bool CTable::PlaceDominoOnHead(dataDomino * newHeadDomino)
 {
-	//if (newHeadDomino->left == )
-	placedDominoes.push_back(newHeadDomino);
+	if (placableHeadValue != -1)
+	{
+		if (newHeadDomino->left == placableHeadValue)
+		{
+			placedDominoes.push_back(newHeadDomino);
+			placableHeadValue = newHeadDomino->right;
+			return true;
+		}
+		else if (newHeadDomino->right == placableHeadValue)
+		{
+			placedDominoes.push_back(newHeadDomino);
+			placableHeadValue = newHeadDomino->left;
+			return true;
+		}
+		else return false;
+	}
+	else
+	{
+		cout << "Placing first domino" << endl;
+		placedDominoes.push_back(newHeadDomino);
+		placableHeadValue = newHeadDomino->right;
+		placableTailValue = newHeadDomino->left;
+		return true;
+
+	}
 }
 
 bool CTable::PlaceDominoOnTail(dataDomino * newTailDomino)
 {
-
+	if (newTailDomino->left == placableHeadValue)
+	{
+		placedDominoes.push_front(newTailDomino);
+		placableHeadValue = newTailDomino->right;
+		return true;
+	}
+	else if (newTailDomino->right == placableHeadValue)
+	{
+		placedDominoes.push_front(newTailDomino);
+		placableHeadValue = newTailDomino->left;
+		return true;
+	}
+	else return false;
 }
 
 dataDomino * CTable::Head()
@@ -266,13 +301,31 @@ bool CPlayer::PlaceDomino(CTable* table, dataDomino* domino, bool head)
 	if (head)
 	{
 		if (table->PlaceDominoOnHead(domino))
+		{
+			for (int i = 0; i < playerDominoes.size(); i++)
+			{
+				if (domino == playerDominoes.at(i))
+				{
+					playerDominoes.erase(playerDominoes.begin() + i);
+				}
+			}
 			return true;
+		}
 		else return false;
 	}
 	else
 	{
 		if (table->PlaceDominoOnTail(domino))
+		{
+			for (int i = 0; i < playerDominoes.size(); i++)
+			{
+				if (domino == playerDominoes.at(i))
+				{
+					playerDominoes.erase(playerDominoes.begin() + i);
+				}
+			}
 			return true;
+		}
 		else return false;
 	}
 }
