@@ -83,6 +83,7 @@ private:
 	int WhoFirst();
 	void FirstPiece();
 	void RunGame();
+	void DominoPlacementOperation(int currentPlayer);
 
 	CTable *table;
 	CDominoes *dominoes;
@@ -151,8 +152,8 @@ void Task4::RunGame()
 	int currentPlayer = WhoFirst();
 	do
 	{
-		// TODO Place the domino on the board using value returned by chooseDomino
-
+		// Loop until player successfully places domino
+		DominoPlacementOperation(currentPlayer);
 
 		// Check for winner
 		if (players[currentPlayer].playerDominoes.size() == 0)
@@ -194,6 +195,19 @@ dataDomino * CTable::Head()
 dataDomino * CTable::Tail()
 {
 	return placedDominoes.front();
+}
+
+// Loops through until the current player places a domino
+void Task4::DominoPlacementOperation(int currentPlayer)
+{
+	int response;
+	bool done;
+	do
+	{
+		cout << "Do you want to place on the head or tail? (0 or 1):" << endl;
+		cin >> response;
+		done = players[currentPlayer].PlaceDomino(table, players[currentPlayer].ChooseDomino(currentPlayer), response);
+	} while (!done);
 }
 
 CDominoes::CDominoes()
