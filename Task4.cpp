@@ -238,9 +238,24 @@ void Task4::PlacementLoop(int currentPlayer)
 	bool done;
 	do
 	{
+		cout << "Domino Head: ";
+		dominoes->PrintDomino(table->Head());
+		cout << "Domino Tail: ";
+		dominoes->PrintDomino(table->Tail());
+		int chosenSpot;
+		cout << "Here is Player " << currentPlayer << "'s hand:" << endl;
+		for (int i = 0; i < players[currentPlayer].playerDominoes.size(); i++)
+		{
+			cout << "Domino " << i << ": ";
+			CDominoes::PrintDomino(players[currentPlayer].playerDominoes.at(i));
+		}
+
+		cout << "Choose a piece: " << endl;
+		cin >> chosenSpot;
+
 		cout << "Do you want to place on the head or tail? (0 or 1):" << endl;
 		cin >> response;
-		done = players[currentPlayer].PlaceDomino(table, players[currentPlayer].ChooseDomino(currentPlayer), response);
+		done = players[currentPlayer].PlaceDomino(table, players[currentPlayer].playerDominoes.at(chosenSpot), response);
 	} while (!done);
 }
 
@@ -273,7 +288,7 @@ void CDominoes::InitializeDominoes(void) {
 
 void CDominoes::PrintDomino(dataDomino *piece)
 {
-	std::cout << "[" << piece->left << "|" << piece->right << "] \nStatus:  " << piece->available << endl;
+	std::cout << "[" << piece->left << "|" << piece->right << "]\n"; // Status:  " << piece->available << endl;
 };
 
 dataDomino* CDominoes::GetRandomPiece() {
@@ -342,21 +357,6 @@ bool CPlayer::PlaceDomino(CTable* table, dataDomino* domino, bool head)
 		else return false;
 	}
 }
-dataDomino * CPlayer::ChooseDomino(int currentPlayer)
-{
-	int chosenSpot;
-	cout << "Here is Player " << currentPlayer << "'s hand:" << endl;
-	for (int i = 0; i < playerDominoes.size(); i++)
-	{
-		cout << "Domino " << i << ": ";
-		CDominoes::PrintDomino(playerDominoes.at(i));
-	}
-
-	cout << "Choose a piece: " << endl;
-	cin >> chosenSpot;
-
-	return playerDominoes.at(chosenSpot);
-};
 
 int main(void)
 {
