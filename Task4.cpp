@@ -36,10 +36,11 @@ public:
 	~CTable();
 	bool PlaceDominoOnHead(dataDomino*);
 	bool PlaceDominoOnTail(dataDomino*);
+	void DisplayPlacedDominos();
 	dataDomino* Head();
 	dataDomino* Tail();
 	int placableHeadValue = -1;
-	int placableTailValue = -1;
+	int placeableTailValue = -1;
 private:
 	deque<dataDomino*> placedDominoes;
 };
@@ -52,6 +53,7 @@ public:
 	~CDominoes();
 	void InitializeDominoes(void);
 	static void PrintDomino(dataDomino*);
+	static void PrintDominoFlipped(dataDomino*);
 	dataDomino* GetRandomPiece();
 	vector<dataDomino*> allDominoes;
 private:
@@ -136,7 +138,7 @@ void Task4::DrawDominoes()
 
 int Task4::WhoFirst()
 {
-	int firstPlayer = CRandom::GetRandomPublic(0, NUMBER_OF_PLAYERS);
+	int firstPlayer = CRandom::GetRandomPublic(0, NUMBER_OF_PLAYERS-1);
 	return firstPlayer;
 };
 
@@ -147,7 +149,7 @@ void Task4::FirstPiece()
 
 void Task4::RunGame()
 {
-	bool winner;
+	bool winner = false;
 	int currentPlayer = WhoFirst();
 	do
 	{
@@ -158,7 +160,7 @@ void Task4::RunGame()
 		if (players[currentPlayer].playerDominoes.size() == 0)
 			winner = true;
 		// Go to next player
-		else if (currentPlayer == NUMBER_OF_PLAYERS)
+		else if (currentPlayer == NUMBER_OF_PLAYERS-1)
 			currentPlayer = 0;
 		else
 			currentPlayer++;
@@ -198,7 +200,7 @@ bool CTable::PlaceDominoOnHead(dataDomino * newHeadDomino)
 		cout << "Placing first domino" << endl;
 		placedDominoes.push_back(newHeadDomino);
 		placableHeadValue = newHeadDomino->right;
-		placableTailValue = newHeadDomino->left;
+		placeableTailValue = newHeadDomino->left;
 		return true;
 
 	}
@@ -206,19 +208,32 @@ bool CTable::PlaceDominoOnHead(dataDomino * newHeadDomino)
 
 bool CTable::PlaceDominoOnTail(dataDomino * newTailDomino)
 {
-	if (newTailDomino->left == placableHeadValue)
+	if (newTailDomino->left == placeableTailValue)
 	{
 		placedDominoes.push_front(newTailDomino);
-		placableHeadValue = newTailDomino->right;
+		placeableTailValue = newTailDomino->right;
 		return true;
 	}
-	else if (newTailDomino->right == placableHeadValue)
+	else if (newTailDomino->right == placeableTailValue)
 	{
 		placedDominoes.push_front(newTailDomino);
-		placableHeadValue = newTailDomino->left;
+		placeableTailValue = newTailDomino->left;
 		return true;
 	}
 	else return false;
+}
+
+void CTable::DisplayPlacedDominos()
+{
+	CDominoes::PrintDomino(placedDominoes.at(0));
+
+	for (int i = 1; i < placedDominoes.size(); i++)
+	{
+		if (placedDominoes.at(i)->left != placedDominoes.at(i-1)->right)
+			CDominoes::PrintDominoFlipped(placedDominoes.at(i));
+		else CDominoes::PrintDomino(placedDominoes.at(i));
+	}
+	cout << endl;
 }
 
 dataDomino * CTable::Head()
@@ -238,24 +253,30 @@ void Task4::PlacementLoop(int currentPlayer)
 	bool done;
 	do
 	{
-		cout << "Domino Head: ";
-		dominoes->PrintDomino(table->Head());
-		cout << "Domino Tail: ";
-		dominoes->PrintDomino(table->Tail());
+		table->DisplayPlacedDominos();
+		cout << "Domino Head: " << table->placableHeadValue;
+		cout << endl;
+		cout << "Domino Tail: " << table->placeableTailValue;
+		cout << endl;
 		int chosenSpot;
 		cout << "Here is Player " << currentPlayer << "'s hand:" << endl;
 		for (int i = 0; i < players[currentPlayer].playerDominoes.size(); i++)
 		{
 			cout << "Domino " << i << ": ";
 			CDominoes::PrintDomino(players[currentPlayer].playerDominoes.at(i));
+			cout << endl;
 		}
 
 		cout << "Choose a piece: " << endl;
 		cin >> chosenSpot;
 
-		cout << "Do you want to place on the head or tail? (0 or 1):" << endl;
+		cout << "Do you want to place on the head or tail? (1 or 0):" << endl;
 		cin >> response;
 		done = players[currentPlayer].PlaceDomino(table, players[currentPlayer].playerDominoes.at(chosenSpot), response);
+		if (!done)
+		{
+			cout << "You can't place that domino there!" << endl;
+		}
 	} while (!done);
 }
 
@@ -288,17 +309,16 @@ void CDominoes::InitializeDominoes(void) {
 
 void CDominoes::PrintDomino(dataDomino *piece)
 {
-	std::cout << "[" << piece->left << "|" << piece->right << "]\n"; // Status:  " << piece->available << endl;
+	cout << "[" << piece->left << "|" << piece->right << "]";
+};
+
+void CDominoes::PrintDominoFlipped(dataDomino *piece)
+{
+	cout << "[" << piece->right << "|" << piece->left << "]";
 };
 
 dataDomino* CDominoes::GetRandomPiece() {
 	dataDomino* piece;
-
-	//do // This is gonna get messy...
-	//{
-	//	piece = allDominoes.at(CRandom::GetRandomPublic(0, allDominoes.size()));
-	//}
-	//while (piece->available != 1);
 
 	piece = availableDominoes.back();
 	availableDominoes.pop_back();
@@ -306,6 +326,7 @@ dataDomino* CDominoes::GetRandomPiece() {
 
 	std::cout << "Random piece drawn: ";
 	PrintDomino(piece);
+	cout << endl;
 
 	return(piece);
 };
