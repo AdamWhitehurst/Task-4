@@ -113,7 +113,6 @@ void Task4::API()
 {
 	CreateDominoes();
 	DrawDominoes();
-	WhoFirst();
 	FirstPiece();
 	RunGame();
 };
@@ -127,7 +126,7 @@ void Task4::DrawDominoes()
 {
 	for (int i = 0; i < STARTING_HAND_SIZE; i++)
 	{
-		for (int j = 0; j < NUMBER_OF_PLAYERS; i++)
+		for (int j = 0; j < NUMBER_OF_PLAYERS; j++)
 		{
 			dataDomino* piece = dominoes->GetRandomPiece();
 			players[j].TakeDomino(piece);
