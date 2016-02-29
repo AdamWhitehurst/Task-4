@@ -83,7 +83,7 @@ private:
 	int WhoFirst();
 	void FirstPiece();
 	void RunGame();
-	void DominoPlacementOperation(int currentPlayer);
+	void PlacementLoop(int currentPlayer);
 
 	CTable *table;
 	CDominoes *dominoes;
@@ -153,7 +153,7 @@ void Task4::RunGame()
 	do
 	{
 		// Loop until player successfully places domino
-		DominoPlacementOperation(currentPlayer);
+		PlacementLoop(currentPlayer);
 
 		// Check for winner
 		if (players[currentPlayer].playerDominoes.size() == 0)
@@ -233,7 +233,7 @@ dataDomino * CTable::Tail()
 }
 
 // Loops through until the current player places a domino
-void Task4::DominoPlacementOperation(int currentPlayer)
+void Task4::PlacementLoop(int currentPlayer)
 {
 	int response;
 	bool done;
