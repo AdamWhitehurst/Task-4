@@ -162,11 +162,11 @@ void Task4::RunGame()
 			endCheck = true;
 			cout << "The winner is Player " << currentPlayer << "!";
 		}
-		else if (dominoes->availableDominoes.size() == 0)
+		/*else if (dominoes->availableDominoes.size() == 0)
 		{
 			cout << "Tie!" << endl;
 			endCheck = true;
-		}
+		}*/
 		// Go to next player
 		else if (currentPlayer == NUMBER_OF_PLAYERS - 1)
 			currentPlayer = 0;
@@ -322,7 +322,13 @@ void Task4::PlacementLoop(int currentPlayer)
 			}
 		}
 		else
+		{
 			done = true; // Player passed
+			if (dominoes->availableDominoes.size() > 0)
+			{
+				players[currentPlayer].TakeDomino(dominoes->GetRandomPiece()); // Draw
+			}
+		}
 	} while (!done);
 }
 
@@ -366,7 +372,7 @@ void CDominoes::PrintDominoFlipped(dataDomino *piece)
 	cout << "[" << piece->right << "|" << piece->left << "]";
 };
 
-// Randomly draws a piece. This is used to start the game.
+// Randomly draws a piece. This is also used to start the game.
 dataDomino* CDominoes::GetRandomPiece() {
 	dataDomino* piece;
 
