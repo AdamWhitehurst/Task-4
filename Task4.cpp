@@ -56,8 +56,8 @@ public:
 	static void PrintDominoFlipped(dataDomino*);
 	dataDomino* GetRandomPiece();
 	vector<dataDomino*> allDominoes;
-private:
 	vector<dataDomino*> availableDominoes;
+private:
 };
 
 // Select a randomly picked domino and sequentially show the selected pieces
@@ -69,7 +69,6 @@ public:
 	void TakeDomino(dataDomino*);
 	bool PlaceDomino(CTable*, dataDomino*, bool);
 	deque<dataDomino*> playerDominoes;
-	dataDomino* ChooseDomino(int currentPlayer);
 };
 
 // Main class that handles domino game
@@ -111,6 +110,7 @@ Task4::~Task4()
 	delete dominoes;
 };
 
+// Initializes the game and runs the loop until a winner is found
 void Task4::API()
 {
 	CreateDominoes();
@@ -158,14 +158,19 @@ void Task4::RunGame()
 
 		// Check for winner
 		if (players[currentPlayer].playerDominoes.size() == 0)
+		{
 			winner = true;
+			cout << "The winner is Player " << currentPlayer << "!";
+		}
+		else if (dominoes->availableDominoes.size() == 0)
+			break; // I don't know if this is good practice or not, but it should work.
 		// Go to next player
-		else if (currentPlayer == NUMBER_OF_PLAYERS-1)
+		else if (currentPlayer == NUMBER_OF_PLAYERS - 1)
 			currentPlayer = 0;
 		else
 			currentPlayer++;
 	}while (!winner);
-	cout << "The winner is Player " << currentPlayer;
+	// TODO handle tie situation?
 };
 
 CTable::CTable()
@@ -177,6 +182,7 @@ CTable::~CTable()
 	std::cout << "Deleting CTable Object.";
 }
 
+// Places a domino on the head of the board
 bool CTable::PlaceDominoOnHead(dataDomino * newHeadDomino)
 {
 	if (placableHeadValue != -1)
@@ -206,6 +212,7 @@ bool CTable::PlaceDominoOnHead(dataDomino * newHeadDomino)
 	}
 }
 
+// Places domino on tail of board
 bool CTable::PlaceDominoOnTail(dataDomino * newTailDomino)
 {
 	if (newTailDomino->left == placeableTailValue)
@@ -223,6 +230,7 @@ bool CTable::PlaceDominoOnTail(dataDomino * newTailDomino)
 	else return false;
 }
 
+// Print the board
 void CTable::DisplayPlacedDominos()
 {
 	CDominoes::PrintDomino(placedDominoes.at(0));
@@ -249,16 +257,23 @@ dataDomino * CTable::Tail()
 // Loops through until the current player places a domino
 void Task4::PlacementLoop(int currentPlayer)
 {
-	int response;
+	int headOrTail, chosenSpot;
+	char passCheck;
+
 	bool done;
 	do
 	{
+		headOrTail = -1;
+		chosenSpot = -1;
+
+		// Show the board
 		table->DisplayPlacedDominos();
 		cout << "Domino Head: " << table->placableHeadValue;
 		cout << endl;
 		cout << "Domino Tail: " << table->placeableTailValue;
 		cout << endl;
-		int chosenSpot;
+
+		// Show player hand
 		cout << "Here is Player " << currentPlayer << "'s hand:" << endl;
 		for (int i = 0; i < players[currentPlayer].playerDominoes.size(); i++)
 		{
@@ -266,17 +281,45 @@ void Task4::PlacementLoop(int currentPlayer)
 			CDominoes::PrintDomino(players[currentPlayer].playerDominoes.at(i));
 			cout << endl;
 		}
-
-		cout << "Choose a piece: " << endl;
-		cin >> chosenSpot;
-
-		cout << "Do you want to place on the head or tail? (1 or 0):" << endl;
-		cin >> response;
-		done = players[currentPlayer].PlaceDomino(table, players[currentPlayer].playerDominoes.at(chosenSpot), response);
-		if (!done)
+		
+		// Prompt user to pass or not
+		cout << "Enter P to pass, or anything else to continue:" << endl;
+		cin >> passCheck;
+		if (passCheck != 'P')
 		{
-			cout << "You can't place that domino there!" << endl;
+			// Player chooses piece
+			do
+			{
+				cin.clear();
+				cin.ignore();
+				cout << "Choose a piece: " << endl;
+				cin >> chosenSpot;
+				if (cin.fail())
+				{
+					cout << "Error. Invalid input." << endl;
+				}
+			} while (cin.fail() || chosenSpot >> 28 || chosenSpot < 0);
+
+			// Player chooses to place on head or tail
+			do
+			{
+				cin.clear();
+				cin.ignore();
+				cout << "Do you want to place on the head or tail? (1 or 0):" << endl;
+				cin >> headOrTail;
+				if (cin.fail())
+				{
+					cout << "Error: Invalid input." << endl;
+				}
+			} while (cin.fail() || headOrTail > 1 || headOrTail < 0);
+			done = players[currentPlayer].PlaceDomino(table, players[currentPlayer].playerDominoes.at(chosenSpot), headOrTail);
+			if (!done)
+			{
+				cout << "You can't place that domino there!" << endl;
+			}
 		}
+		else
+			done = true; // Player passed
 	} while (!done);
 }
 
@@ -289,6 +332,7 @@ CDominoes::~CDominoes()
 	std::cout << "Deleting CDominoes Object.";
 };
 
+// Creates the domino objects at the beginning of the game
 void CDominoes::InitializeDominoes(void) {
 
 	for (int right = 0; right < 7; right++)
@@ -307,16 +351,19 @@ void CDominoes::InitializeDominoes(void) {
 	std::random_shuffle(availableDominoes.begin(), availableDominoes.end());
 }
 
+// Prints out a domino-looking object
 void CDominoes::PrintDomino(dataDomino *piece)
 {
 	cout << "[" << piece->left << "|" << piece->right << "]";
 };
 
+// Prints out a flipped domino-looking object
 void CDominoes::PrintDominoFlipped(dataDomino *piece)
 {
 	cout << "[" << piece->right << "|" << piece->left << "]";
 };
 
+// Randomly draws a piece. This is used to start the game.
 dataDomino* CDominoes::GetRandomPiece() {
 	dataDomino* piece;
 
@@ -340,13 +387,18 @@ CPlayer::~CPlayer()
 	std::cout << "Deleting CPlayer Object.";
 };
 
+// Grabs a domino from the pile and adds to the player's hand
 void CPlayer::TakeDomino(dataDomino* newDomino)
 {
 	playerDominoes.push_back(newDomino);
 };
 
+// Handles placing a domino on the table
+// Bool parameter decides if the domino is placed on the head or tail. (1 for head, 0 for tail)
+// Returns true if the placement was successful.
 bool CPlayer::PlaceDomino(CTable* table, dataDomino* domino, bool head)
 {
+	// Head
 	if (head)
 	{
 		if (table->PlaceDominoOnHead(domino))
@@ -362,6 +414,7 @@ bool CPlayer::PlaceDomino(CTable* table, dataDomino* domino, bool head)
 		}
 		else return false;
 	}
+	// Tail
 	else
 	{
 		if (table->PlaceDominoOnTail(domino))
