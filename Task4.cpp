@@ -163,7 +163,10 @@ void Task4::RunGame()
 			cout << "The winner is Player " << currentPlayer << "!";
 		}
 		else if (dominoes->availableDominoes.size() == 0)
+		{
+			cout << "Tie!" << endl;
 			break; // I don't know if this is good practice or not, but it should work.
+		}
 		// Go to next player
 		else if (currentPlayer == NUMBER_OF_PLAYERS - 1)
 			currentPlayer = 0;
