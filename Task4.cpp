@@ -149,7 +149,7 @@ void Task4::FirstPiece()
 
 void Task4::RunGame()
 {
-	bool winner = false;
+	bool endCheck = false;
 	int currentPlayer = WhoFirst();
 	do
 	{
@@ -159,20 +159,20 @@ void Task4::RunGame()
 		// Check for winner
 		if (players[currentPlayer].playerDominoes.size() == 0)
 		{
-			winner = true;
+			endCheck = true;
 			cout << "The winner is Player " << currentPlayer << "!";
 		}
 		else if (dominoes->availableDominoes.size() == 0)
 		{
 			cout << "Tie!" << endl;
-			break; // I don't know if this is good practice or not, but it should work.
+			endCheck = true;
 		}
 		// Go to next player
 		else if (currentPlayer == NUMBER_OF_PLAYERS - 1)
 			currentPlayer = 0;
 		else
 			currentPlayer++;
-	}while (!winner);
+	}while (!endCheck);
 	// TODO handle tie situation?
 };
 
