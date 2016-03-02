@@ -263,7 +263,7 @@ void Task4::PlacementLoop(int currentPlayer)
 	int headOrTail, chosenSpot;
 	char passCheck;
 
-	bool done;
+	bool done = false;
 	do
 	{
 		headOrTail = -1;
