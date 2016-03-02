@@ -301,7 +301,7 @@ void Task4::PlacementLoop(int currentPlayer)
 				{
 					cout << "Error. Invalid input." << endl;
 				}
-			} while (cin.fail() || chosenSpot >> 28 || chosenSpot < 0);
+			} while (cin.fail() || chosenSpot > players[currentPlayer].playerDominoes.size() || chosenSpot < 0);
 
 			// Player chooses to place on head or tail
 			do
