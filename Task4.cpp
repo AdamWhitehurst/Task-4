@@ -286,7 +286,7 @@ void Task4::PlacementLoop(int currentPlayer)
 		}
 		
 		// Prompt user to pass or not
-		cout << "Enter P to pass, or anything else to continue:\n If you pass and there are still dominoes available, \n you will draw dominoes until you can place one." ;
+		cout << "Enter P to pass, or anything else to continue.\nIf you pass and there are still dominoes available, \nyou will draw dominoes until you can place one:" << endl;
 		cin >> passCheck;
 		if (passCheck != 'P')
 		{
@@ -328,9 +328,13 @@ void Task4::PlacementLoop(int currentPlayer)
 				players[currentPlayer].TakeDomino(dominoes->GetRandomPiece()); // Draw
 			}
 			else
+			{
 				done = true;
+				cout << "Player " << currentPlayer << " passed." << endl;
+			}	
 		}
 	} while (!done);
+	cout << "Player " << currentPlayer << "'s turn has ended." << endl;
 }
 
 CDominoes::CDominoes()
