@@ -37,8 +37,6 @@ public:
 	bool PlaceDominoOnHead(dataDomino*);
 	bool PlaceDominoOnTail(dataDomino*);
 	void DisplayPlacedDominos();
-	dataDomino* Head();
-	dataDomino* Tail();
 	int placableHeadValue = -1;
 	int placeableTailValue = -1;
 private:
@@ -53,7 +51,7 @@ public:
 	~CDominoes();
 	void InitializeDominoes(void);
 	static void PrintDomino(dataDomino*);
-	static void PrintDominoFlipped(dataDomino*);
+	static void FlipDomino(dataDomino*);
 	dataDomino* GetRandomPiece();
 	vector<dataDomino*> allDominoes;
 	vector<dataDomino*> availableDominoes;
@@ -200,6 +198,7 @@ bool CTable::PlaceDominoOnHead(dataDomino * newHeadDomino)
 		{
 			placedDominoes.push_back(newHeadDomino);
 			placableHeadValue = newHeadDomino->left;
+			CDominoes::FlipDomino(newHeadDomino);
 			return true;
 		}
 		else return false;
@@ -222,6 +221,7 @@ bool CTable::PlaceDominoOnTail(dataDomino * newTailDomino)
 	{
 		placedDominoes.push_front(newTailDomino);
 		placeableTailValue = newTailDomino->right;
+		CDominoes::FlipDomino(newTailDomino);
 		return true;
 	}
 	else if (newTailDomino->right == placeableTailValue)
@@ -240,21 +240,9 @@ void CTable::DisplayPlacedDominos()
 
 	for (int i = 1; i < placedDominoes.size(); i++)
 	{
-		if (placedDominoes.at(i)->left != placedDominoes.at(i-1)->right)
-			CDominoes::PrintDominoFlipped(placedDominoes.at(i));
-		else CDominoes::PrintDomino(placedDominoes.at(i));
+		CDominoes::PrintDomino(placedDominoes.at(i));
 	}
 	cout << endl;
-}
-
-dataDomino * CTable::Head()
-{
-	return placedDominoes.back();
-}
-
-dataDomino * CTable::Tail()
-{
-	return placedDominoes.front();
 }
 
 // Loops through until the current player places a domino
@@ -371,11 +359,13 @@ void CDominoes::PrintDomino(dataDomino *piece)
 	cout << "[" << piece->left << "|" << piece->right << "]";
 };
 
-// Prints out a flipped domino-looking object
-void CDominoes::PrintDominoFlipped(dataDomino *piece)
+//Switches the left and right values of a domino
+void CDominoes::FlipDomino(dataDomino *piece)
 {
-	cout << "[" << piece->right << "|" << piece->left << "]";
-};
+	int temp = piece->right;
+	piece->right = piece->left;
+	piece->left = temp;
+}
 
 // Randomly draws a piece. This is also used to start the game.
 dataDomino* CDominoes::GetRandomPiece() {
