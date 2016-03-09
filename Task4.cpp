@@ -149,6 +149,7 @@ void Task4::RunGame()
 {
 	bool endCheck = false;
 	int currentPlayer = WhoFirst();
+	cout << "Player " << currentPlayer + 1 << " will play first." << endl << endl;
 	do
 	{
 		// Loop until player successfully places domino
@@ -158,7 +159,7 @@ void Task4::RunGame()
 		if (players[currentPlayer].playerDominoes.size() == 0)
 		{
 			endCheck = true;
-			cout << "The winner is Player " << currentPlayer << "!";
+			cout << "The winner is Player " << currentPlayer + 1 << "!" << endl;
 		}
 		/*else if (dominoes->availableDominoes.size() == 0)
 		{
@@ -205,7 +206,7 @@ bool CTable::PlaceDominoOnHead(dataDomino * newHeadDomino)
 	}
 	else
 	{
-		cout << "Placing first domino" << endl;
+		cout << "Placing first domino." << endl << endl;
 		placedDominoes.push_back(newHeadDomino);
 		placableHeadValue = newHeadDomino->right;
 		placeableTailValue = newHeadDomino->left;
@@ -258,6 +259,7 @@ void Task4::PlacementLoop(int currentPlayer)
 		chosenSpot = -1;
 
 		// Show the board
+		cout << "Board: " << endl;
 		table->DisplayPlacedDominos();
 		cout << "Domino Head: " << table->placableHeadValue;
 		cout << endl;
@@ -265,7 +267,7 @@ void Task4::PlacementLoop(int currentPlayer)
 		cout << endl;
 
 		// Show player hand
-		cout << "Here is Player " << currentPlayer << "'s hand:" << endl;
+		cout << endl << "Here is Player " << currentPlayer + 1 << "'s hand:" << endl;
 		for (int i = 0; i < players[currentPlayer].playerDominoes.size(); i++)
 		{
 			cout << "Domino " << i << ": ";
@@ -274,7 +276,7 @@ void Task4::PlacementLoop(int currentPlayer)
 		}
 		
 		// Prompt user to pass or not
-		cout << "Enter P to pass, or anything else to continue.\nIf you pass and there are still dominoes available, \nyou will draw dominoes until you can place one:" << endl;
+		cout << endl << "Enter P to pass, or anything else to continue.\nIf you pass and there are still dominoes available, \nyou will draw dominoes until you can place one:" << endl;
 		cin >> passCheck;
 		if (passCheck != 'P')
 		{
@@ -322,7 +324,7 @@ void Task4::PlacementLoop(int currentPlayer)
 			}	
 		}
 	} while (!done);
-	cout << "Player " << currentPlayer << "'s turn has ended." << endl;
+	cout << "Player " << currentPlayer << "'s turn has ended." << endl << endl;
 }
 
 CDominoes::CDominoes()
