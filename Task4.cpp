@@ -160,7 +160,14 @@ void Task4::RunGame()
 		if (players[currentPlayer].playerDominoes.size() == 0)
 		{
 			endCheck = true;
-			cout << "The winner is Player " << currentPlayer + 1 << "!" << endl;
+			cout << endl << "The winner is Player " << currentPlayer + 1 << "!" << endl;
+			// Show the board
+			cout << "Board: " << endl;
+			table->DisplayPlacedDominos();
+			cout << "Domino Head: " << table->placableHeadValue;
+			cout << endl;
+			cout << "Domino Tail: " << table->placeableTailValue;
+			cout << endl;
 		}
 		else if (currentPlayer == NUMBER_OF_PLAYERS - 1)
 			currentPlayer = 0;
@@ -334,15 +341,26 @@ void Task4::AutoPlay(int currentPlayer)
 	cout << "Domino Tail: " << table->placeableTailValue;
 	cout << endl;
 
+	cout << endl << "Here is Player " << currentPlayer + 1 << "'s hand:" << endl;
+	for (int i = 0; i < players[currentPlayer].playerDominoes.size(); i++)
+	{
+		CDominoes::PrintDomino(players[currentPlayer].playerDominoes.at(i));
+		cout << endl;
+	}
+
 	bool done = false;
 	do
 	{
 		// Loop through the player's domino heads and check if they match head or tail
 		for (int i = 0; i < players[currentPlayer].playerDominoes.size(); i++)
 		{
+			dataDomino* tempDomino = players[currentPlayer].playerDominoes.at(i);
 			if (!done) {
-				if (players[currentPlayer].PlaceDomino(table, players[currentPlayer].playerDominoes.at(i), 1))
+				if (players[currentPlayer].PlaceDomino(table, tempDomino, 1))
 				{
+					cout << "Player " << currentPlayer + 1 << " placed domino: ";
+					CDominoes::PrintDomino(tempDomino);
+					cout << endl;
 					done = true;
 					break;
 				}
@@ -351,6 +369,9 @@ void Task4::AutoPlay(int currentPlayer)
 			if (!done) {
 				if (players[currentPlayer].PlaceDomino(table, players[currentPlayer].playerDominoes.at(i), 0))
 				{
+					cout << "Player " << currentPlayer + 1 << " placed domino: ";
+					CDominoes::PrintDomino(tempDomino);
+					cout << endl;
 					done = true;
 					break;
 				}
