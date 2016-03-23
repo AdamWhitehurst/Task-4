@@ -83,6 +83,7 @@ private:
 	void FirstPiece();
 	void RunGame();
 	void PlacementLoop(int currentPlayer);
+	void AutoPlay(int currentPlayer);
 
 	CTable *table;
 	CDominoes *dominoes;
@@ -153,7 +154,7 @@ void Task4::RunGame()
 	do
 	{
 		// Loop until player successfully places domino
-		PlacementLoop(currentPlayer);
+		AutoPlay(currentPlayer);
 
 		// Check for winner
 		if (players[currentPlayer].playerDominoes.size() == 0)
@@ -161,18 +162,11 @@ void Task4::RunGame()
 			endCheck = true;
 			cout << "The winner is Player " << currentPlayer + 1 << "!" << endl;
 		}
-		/*else if (dominoes->availableDominoes.size() == 0)
-		{
-			cout << "Tie!" << endl;
-			endCheck = true;
-		}*/
-		// Go to next player
 		else if (currentPlayer == NUMBER_OF_PLAYERS - 1)
 			currentPlayer = 0;
 		else
 			currentPlayer++;
 	}while (!endCheck);
-	// TODO handle tie situation?
 };
 
 CTable::CTable()
@@ -325,6 +319,48 @@ void Task4::PlacementLoop(int currentPlayer)
 		}
 	} while (!done);
 	cout << "Player " << currentPlayer << "'s turn has ended." << endl << endl;
+}
+
+// Automatically has a player play the game
+void Task4::AutoPlay(int currentPlayer)
+{
+	cout << "Player " << currentPlayer + 1 << " is playing: " << endl;
+
+	// Show the board
+	cout << "Board: " << endl;
+	table->DisplayPlacedDominos();
+	cout << "Domino Head: " << table->placableHeadValue;
+	cout << endl;
+	cout << "Domino Tail: " << table->placeableTailValue;
+	cout << endl;
+
+	bool done = false;
+	do
+	{
+		// Loop through the player's domino heads and check if they match head or tail
+		for (int i = 0; i < players[currentPlayer].playerDominoes.size(); i++)
+		{
+			if (!done) {
+				if (players[currentPlayer].PlaceDomino(table, players[currentPlayer].playerDominoes.at(i), 1))
+				{
+					done = true;
+					break;
+				}
+			}
+
+			if (!done) {
+				if (players[currentPlayer].PlaceDomino(table, players[currentPlayer].playerDominoes.at(i), 0))
+				{
+					done = true;
+					break;
+				}
+			}
+		}
+
+		if (!done) {
+			players[currentPlayer].TakeDomino(dominoes->GetRandomPiece()); // Draw
+		}
+	} while (!done);
 }
 
 CDominoes::CDominoes()
