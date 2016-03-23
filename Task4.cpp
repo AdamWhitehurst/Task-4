@@ -164,10 +164,6 @@ void Task4::RunGame()
 			// Show the board
 			cout << "Board: " << endl;
 			table->DisplayPlacedDominos();
-			cout << "Domino Head: " << table->placableHeadValue;
-			cout << endl;
-			cout << "Domino Tail: " << table->placeableTailValue;
-			cout << endl;
 		}
 		else if (currentPlayer == NUMBER_OF_PLAYERS - 1)
 			currentPlayer = 0;
