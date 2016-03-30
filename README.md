@@ -1,2 +1,2 @@
 # Task-4
-Dominoes Game
+CSCE 211 Task 4 "Dominoes Game"
